@@ -1,3 +1,19 @@
+# update as of 2022-11-24
+
+LLVM headers/code is updated to work with LLVM 14, but this technique to dump
+the intermediate NVVM IR no longer seems to work.
+I guess `cicc` used to be dynamically linked to `libnvvm`, which is why this worked.
+
+sample output when executing compiling test1:
+
+```console
+$ make test1_unopt
+CICC_MODIFY_UNOPT_MODULE=1 LD_PRELOAD=./libnvcc.so nvcc -arch=sm_80 test1.cu -rdc=true -c -keep
+inside constructor
+cmd: LD_PRELOAD=./libcicc.so cicc --c++17 --gnu_version=120200 --display_error_number --orig_src_file_name test1.cu --orig_src_path_name /home/a/src/nvcc-llvm-ir/test1.cu --allow_managed --device-c -arch compute_80 -m64 --no-version-ident -ftz=0 -prec_div=1 -prec_sqrt=1 -fmad=1 --include_file_name test1.fatbin.c -tused --gen_module_id_file --module_id_file_name test1.module_id --gen_c_file_name test1.cudafe1.c --stub_file_name test1.cudafe1.stub.c --gen_device_file_name test1.cudafe1.gpu test1.cpp1.ii -o test1.ptx
+exited with result: 0
+```
+
 # Enabling on-the-fly manipulations with LLVM IR code of CUDA sources
 
 Largely thanks to [LLVM](http://llvm.org/), in recent years we've seen a significant increase of interest to domain-specific compilation tools research & development. With the release of PTX backends by NVIDIA (opensource [NVPTX](http://llvm.org/docs/NVPTXUsage.html) and proprietary [libNVVM](https://developer.nvidia.com/cuda-llvm-compiler)), construction of custom LLVM-driven compilers for generating GPU binaries also becomes possible. However, two questions are still remaining:

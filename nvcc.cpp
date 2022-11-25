@@ -22,13 +22,16 @@ __attribute__((constructor)) static void activate(int argc, char** argv)
 	if (!endsWith(progname, "cicc"))
 		return;
 
+	printf("inside constructor\n");
 	stringstream s;
 	s << "LD_PRELOAD=./libcicc.so " << argv[0];
 	for (int i = 1; i < argc; i++)
 		s << " " << argv[i];
 
 	string cmd = s.str();
+	printf("cmd: %s\n", cmd.c_str());
 	int result = system(cmd.c_str());
+	printf("exited with result: %d\n", result);
 	exit(result);
 }
 
